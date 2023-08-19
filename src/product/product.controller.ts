@@ -3,7 +3,7 @@ import {
   Get,
   Post,
   Body,
-  Patch,
+  Put,
   Param,
   Delete,
 } from '@nestjs/common';
@@ -26,5 +26,25 @@ export class ProductController {
   async getAllProducts() {
     const products = await this.productService.productGetAll();
     return products;
+  }
+  //상세정보
+  @Get(':id')
+  async getProductById(@Param('id') id: string) {
+    const product = await this.productService.productGetById(id);
+    return product;
+  }
+
+  @Put(':id')
+  async updatedProductById(
+    @Body() createProductDto: CreateProductDto,
+    @Param('id') id: string,
+  ) {
+    return await this.productService.productUpdateById(id, createProductDto);
+  }
+
+  @Delete(':id')
+  async deletedProductById(@Param('id') id: string) {
+    const product = await this.productService.productDeleteById(id);
+    return product;
   }
 }

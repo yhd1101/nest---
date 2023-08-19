@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Product } from './entities/product.entity';
@@ -21,5 +21,24 @@ export class ProductService {
   async productGetAll() {
     const products = await this.productRepository.find();
     return { count: products.length, products };
+  }
+
+  //세부
+  async productGetById(id: string) {
+    const product = await this.productRepository.findOneBy({ id });
+    if (!product) {
+      throw new HttpException('No id', HttpStatus.NOT_FOUND);
+    }
+    return product;
+  }
+
+  async productUpdateById(id: string, createProductDto: CreateProductDto) {
+    await this.productRepository.update(id, createProductDto);
+    return 'updated product';
+  }
+
+  async productDeleteById(id: string) {
+    await this.productRepository.delete({ id });
+    return 'deleted product';
   }
 }
